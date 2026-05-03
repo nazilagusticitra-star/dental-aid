@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DENTAL-AID: First Response</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --white: #ffffff;
+    --bg: #f0f7ff;
+    --blue-light: #dbeeff;
+    --blue: #4da8f0;
+    --blue-mid: #2e8fd6;
+    --blue-deep: #1a6bb5;
+    --mint: #b8f0e6;
+    --mint-dark: #3ec9a7;
+    --peach: #ffd6cc;
+    --yellow: #fff3b0;
+    --yellow-dark: #f9c74f;
+    --green: #d4f7e7;
+    --green-dark: #2dc653;
+    --red-light: #ffe0e0;
+    --red-dark: #e84855;
+    --wa-green: #25D366;
+    --wa-dark: #128C7E;
+    --text: #2d3a4a;
+    --text-light: #6b7f93;
+    --shadow: 0 8px 32px rgba(77,168,240,0.13);
+    --radius: 24px;
+    --radius-sm: 14px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  body::before, body::after {
+    content: ''; position: fixed; border-radius: 50%; pointer-events: none; z-index: 0;
+  }
+  body::before {
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, #c9e8ff 0%, transparent 70%);
+    top: -150px; right: -150px;
+    animation: blobFloat 8s ease-in-out infinite alternate;
+  }
+  body::after {
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, #d8f3ec 0%, transparent 70%);
+    bottom: -120px; left: -120px;
+    animation: blobFloat 10s ease-in-out infinite alternate-reverse;
+  }
+  @keyframes blobFloat {
+    from { transform: scale(1) translate(0,0); }
+    to   { transform: scale(1.1) translate(20px,20px); }
+  }
+  #app {
+    position: relative; z-index: 1;
+    width: 100%; max-width: 520px; padding: 16px;
+  }
+  .page { display: none; animation: pageIn 0.45s cubic-bezier(.4,0,.2,1); }
+  .page.active { display: block; }
+  @keyframes pageIn {
+    from { opacity: 0; transform: translateY(28px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .card {
+    background: var(--white); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 36px 32px;
+    position: relative; overflow: hidden;
+  }
+  .card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px;
+    background: linear-gradient(90deg, var(--blue), var(--mint-dark), #9b72cf);
+    border-radius: var(--radius) var(--radius) 0 0;
+  }
+
+  /* LANDING */
+  .landing-top { text-align: center; padding-bottom: 8px; }
+  .tooth-hero {
+    font-size: 80px; line-height: 1; margin-bottom: 8px; display: block;
+    animation: toothBounce 2s ease-in-out infinite;
+    filter: drop-shadow(0 8px 16px rgba(77,168,240,0.2));
+  }
+  @keyframes toothBounce {
+    0%,100% { transform: translateY(0) rotate(-3deg); }
+    50%      { transform: translateY(-10px) rotate(3deg); }
+  }
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--blue-light); color: var(--blue-deep);
+    font-size: 11px; font-weight: 800; letter-spacing: 1.5px;
+    text-transform: uppercase; padding: 5px 14px; border-radius: 99px; margin-bottom: 14px;
+  }
+  .badge-dot {
+    width: 7px; height: 7px; background: var(--blue-mid); border-radius: 50%;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity:1; transform:scale(1); }
+    50%      { opacity:0.5; transform:scale(0.7); }
+  }
+  .landing-title {
+    font-size: 36px; font-weight: 900; color: var(--text);
+    line-height: 1.1; margin-bottom: 4px; letter-spacing: -1px;
+  }
+  .landing-title span { color: var(--blue-mid); }
+  .landing-subtitle {
+    font-family: 'Quicksand', sans-serif; font-size: 14px; font-weight: 500;
+    color: var(--text-light); margin-bottom: 24px; line-height: 1.6;
+  }
+  .feature-row {
+    display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 28px;
+  }
+  .feature-pill {
+    display: flex; align-items: center; gap: 5px;
+    background: var(--bg); border: 1.5px solid var(--blue-light);
+    color: var(--text); font-size: 12px; font-weight: 700;
+    padding: 7px 13px; border-radius: 99px;
+  }
+
+  /* BUTTONS */
+  .btn-primary {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    width: 100%; background: linear-gradient(135deg, var(--blue-mid), var(--blue-deep));
+    color: #fff; font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 800;
+    padding: 16px 28px; border-radius: var(--radius-sm); border: none; cursor: pointer;
+    transition: all 0.2s ease; box-shadow: 0 6px 20px rgba(46,143,214,0.35);
+  }
+  .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(46,143,214,0.45); }
+  .btn-primary:active { transform: translateY(0); }
+
+  .btn-secondary {
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    background: var(--bg); color: var(--text-light); font-family: 'Nunito', sans-serif;
+    font-size: 14px; font-weight: 700; padding: 12px 20px; border-radius: var(--radius-sm);
+    border: 2px solid var(--blue-light); cursor: pointer; transition: all 0.2s; margin-top: 10px; width: 100%;
+  }
+  .btn-secondary:hover { background: var(--blue-light); color: var(--blue-deep); border-color: var(--blue); transform: translateY(-2px); }
+
+  .btn-wa {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    width: 100%; background: linear-gradient(135deg, var(--wa-green), var(--wa-dark));
+    color: #fff; font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 800;
+    padding: 15px 28px; border-radius: var(--radius-sm); border: none; cursor: pointer;
+    transition: all 0.2s ease; box-shadow: 0 6px 20px rgba(37,211,102,0.35);
+    text-decoration: none;
+  }
+  .btn-wa:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(37,211,102,0.45); }
+
+  .btn-admin {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    width: 100%; background: linear-gradient(135deg, #9b72cf, #6a3fa6);
+    color: #fff; font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 800;
+    padding: 13px 20px; border-radius: var(--radius-sm); border: none; cursor: pointer;
+    transition: all 0.2s ease; box-shadow: 0 4px 16px rgba(155,114,207,0.3); margin-top: 10px;
+  }
+  .btn-admin:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(155,114,207,0.4); }
+
+  .btn-danger {
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    width: 100%; background: var(--red-light); color: var(--red-dark);
+    font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 800;
+    padding: 11px; border-radius: var(--radius-sm); border: 2px solid #f5c0c0; cursor: pointer;
+    transition: all 0.2s; margin-top: 8px;
+  }
+  .btn-danger:hover { background: var(--red-dark); color: #fff; }
+
+  /* PROGRESS */
+  .progress-wrap { margin-bottom: 24px; }
+  .progress-label { display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; color: var(--text-light); margin-bottom: 8px; }
+  .progress-bar-bg { background: var(--blue-light); border-radius: 99px; height: 8px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--blue), var(--mint-dark)); transition: width 0.5s cubic-bezier(.4,0,.2,1); }
+  .step-dots { display: flex; gap: 6px; justify-content: center; margin-top: 10px; }
+  .step-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--blue-light); transition: all 0.3s; }
+  .step-dot.active { background: var(--blue-mid); transform: scale(1.3); }
+  .step-dot.done   { background: var(--mint-dark); }
+
+  /* SECTION HEADER */
+  .section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+  .section-icon { width: 48px; height: 48px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
+  .section-title { font-size: 18px; font-weight: 800; color: var(--text); line-height: 1.2; }
+  .section-desc  { font-size: 12px; color: var(--text-light); font-weight: 600; margin-top: 2px; }
+
+  /* FORM */
+  .form-group { margin-bottom: 16px; }
+  .form-label { display: block; font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 7px; }
+  .form-input {
+    width: 100%; padding: 12px 16px; border: 2px solid var(--blue-light);
+    border-radius: var(--radius-sm); font-family: 'Nunito', sans-serif; font-size: 14px;
+    color: var(--text); background: var(--bg); transition: all 0.2s; outline: none;
+  }
+  .form-input:focus { border-color: var(--blue); box-shadow: 0 0 0 4px rgba(77,168,240,0.12); background: #fff; }
+
+  /* QUESTION CARDS */
+  .q-card {
+    background: var(--bg); border: 2px solid var(--blue-light);
+    border-radius: var(--radius-sm); padding: 16px; margin-bottom: 12px; transition: all 0.2s;
+  }
+  .q-card:has(input:checked) { border-color: var(--blue); background: var(--blue-light); box-shadow: 0 4px 16px rgba(77,168,240,0.12); }
+  .q-text { font-size: 13.5px; font-weight: 700; color: var(--text); margin-bottom: 12px; line-height: 1.5; }
+  .q-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px; background: var(--blue); color: #fff;
+    border-radius: 50%; font-size: 11px; font-weight: 800; margin-right: 8px; flex-shrink: 0;
+  }
+  .radio-group { display: flex; gap: 8px; flex-wrap: wrap; }
+  .radio-option { position: relative; flex: 1; min-width: 70px; }
+  .radio-option input[type=radio] { position: absolute; opacity: 0; width: 0; height: 0; }
+  .radio-label {
+    display: flex; align-items: center; justify-content: center; gap: 5px;
+    padding: 9px 12px; background: #fff; border: 2px solid #dbeeff; border-radius: 10px;
+    font-size: 13px; font-weight: 700; color: var(--text-light); cursor: pointer;
+    transition: all 0.18s; text-align: center; line-height: 1.3;
+  }
+  .radio-option input[type=radio]:checked + .radio-label {
+    background: var(--blue-mid); border-color: var(--blue-mid); color: #fff;
+    box-shadow: 0 4px 12px rgba(46,143,214,0.3); transform: scale(1.03);
+  }
+  .radio-label:hover { border-color: var(--blue); color: var(--blue-deep); }
+
+  .check-group { display: flex; flex-direction: column; gap: 8px; }
+  .check-option { position: relative; }
+  .check-option input[type=checkbox] { position: absolute; opacity: 0; width: 0; height: 0; }
+  .check-label {
+    display: flex; align-items: center; gap: 10px; padding: 11px 14px;
+    background: #fff; border: 2px solid #dbeeff; border-radius: 10px;
+    font-size: 13px; font-weight: 700; color: var(--text-light); cursor: pointer; transition: all 0.18s;
+  }
+  .check-label .chk-box {
+    width: 18px; height: 18px; border: 2px solid #c5dcf0; border-radius: 5px;
+    flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.2s; font-size: 10px;
+  }
+  .check-option input[type=checkbox]:checked + .check-label { background: var(--blue-light); border-color: var(--blue-mid); color: var(--blue-deep); }
+  .check-option input[type=checkbox]:checked + .check-label .chk-box { background: var(--blue-mid); border-color: var(--blue-mid); color: #fff; }
+
+  /* ERROR */
+  .error-msg {
+    background: var(--red-light); color: var(--red-dark); font-size: 12px; font-weight: 700;
+    padding: 10px 14px; border-radius: 10px; margin-bottom: 14px; display: none; align-items: center; gap: 6px;
+  }
+  .error-msg.show { display: flex; }
+
+  /* RESULT */
+  .result-icon-wrap { text-align: center; margin-bottom: 20px; }
+  .result-emoji { font-size: 72px; display: block; animation: resultPop 0.6s cubic-bezier(.34,1.56,.64,1); }
+  @keyframes resultPop {
+    from { transform: scale(0) rotate(-20deg); opacity: 0; }
+    to   { transform: scale(1) rotate(0deg);  opacity: 1; }
+  }
+  .result-status-badge {
+    display: inline-block; padding: 7px 22px; border-radius: 99px;
+    font-size: 13px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; margin-top: 10px;
+  }
+  .status-green  { background: var(--green);     color: #1a7a42; }
+  .status-yellow { background: var(--yellow);    color: #8a6300; }
+  .status-red    { background: var(--red-light); color: var(--red-dark); }
+  .result-message-box {
+    border-radius: var(--radius-sm); padding: 18px 20px; margin: 18px 0;
+    border-left: 5px solid; font-size: 15px; font-weight: 700; line-height: 1.6; color: var(--text);
+  }
+  .msg-green  { background: var(--green);     border-color: var(--green-dark); }
+  .msg-yellow { background: var(--yellow);    border-color: var(--yellow-dark); }
+  .msg-red    { background: var(--red-light); border-color: var(--red-dark); }
+  .result-tips { background: var(--bg); border-radius: var(--radius-sm); padding: 16px; margin-bottom: 16px; }
+  .result-tips-title { font-size: 12px; font-weight: 800; color: var(--text-light); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+  .tip-item { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 8px; line-height: 1.5; }
+  .tip-icon { flex-shrink: 0; font-size: 16px; }
+
+  .identity-result {
+    background: var(--blue-light); border-radius: var(--radius-sm); padding: 12px 16px;
+    margin-bottom: 16px; display: flex; align-items: center; gap: 10px;
+  }
+  .id-avatar { width: 38px; height: 38px; background: var(--blue-mid); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .id-name  { font-size: 14px; font-weight: 800; color: var(--text); }
+  .id-info  { font-size: 12px; color: var(--text-light); font-weight: 600; }
+
+  /* WA SECTION */
+  .wa-section {
+    background: linear-gradient(135deg, #e8fff4, #d4f7e7);
+    border: 2px solid #a8e6c8; border-radius: var(--radius-sm); padding: 18px; margin-bottom: 16px;
+  }
+  .wa-section-title { font-size: 14px; font-weight: 800; color: #1a7a42; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+  .wa-section-desc  { font-size: 12px; color: #3a6b50; font-weight: 600; line-height: 1.6; margin-bottom: 14px; }
+
+  /* DIVIDER */
+  .divider { display: flex; align-items: center; gap: 10px; margin: 16px 0; color: var(--text-light); font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+  .divider::before, .divider::after { content: ''; flex: 1; height: 1.5px; background: var(--blue-light); border-radius: 99px; }
+
+  .footer-note { text-align: center; font-size: 11px; color: var(--text-light); margin-top: 14px; font-weight: 600; font-family: 'Quicksand', sans-serif; }
+  .footer-note span { color: var(--blue-mid); }
+
+  /* ADMIN */
+  .admin-login-box { text-align: center; margin-bottom: 24px; }
+  .admin-icon { font-size: 52px; display: block; margin-bottom: 8px; }
+  .admin-title { font-size: 22px; font-weight: 900; color: var(--text); }
+  .admin-sub   { font-size: 13px; color: var(--text-light); font-weight: 600; margin-top: 4px; }
+
+  .table-wrap { overflow-x: auto; border-radius: var(--radius-sm); margin-bottom: 16px; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 460px; }
+  thead tr { background: linear-gradient(135deg, var(--blue-mid), var(--blue-deep)); color: #fff; }
+  th { padding: 10px 12px; font-weight: 800; text-align: left; white-space: nowrap; }
+  td { padding: 9px 12px; border-bottom: 1px solid var(--blue-light); color: var(--text); font-weight: 600; }
+  tr:last-child td { border-bottom: none; }
+  tr:nth-child(even) td { background: var(--bg); }
+
+  .badge-risk { display: inline-block; padding: 3px 10px; border-radius: 99px; font-size: 11px; font-weight: 800; white-space: nowrap; }
+  .risk-green  { background: var(--green);     color: #1a7a42; }
+  .risk-yellow { background: var(--yellow);    color: #8a6300; }
+  .risk-red    { background: var(--red-light); color: var(--red-dark); }
+
+  .admin-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 18px; }
+  .summary-card { border-radius: var(--radius-sm); padding: 14px 12px; text-align: center; }
+  .summary-card .s-num { font-size: 28px; font-weight: 900; line-height: 1; }
+  .summary-card .s-lbl { font-size: 11px; font-weight: 700; margin-top: 4px; }
+  .sc-green  { background: var(--green);     color: #1a7a42; }
+  .sc-yellow { background: var(--yellow);    color: #8a6300; }
+  .sc-red    { background: var(--red-light); color: var(--red-dark); }
+
+  .empty-state { text-align: center; padding: 32px 16px; color: var(--text-light); }
+  .empty-state .e-icon { font-size: 40px; display: block; margin-bottom: 8px; }
+  .empty-state .e-text { font-size: 13px; font-weight: 700; }
+
+  .admin-header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .admin-header-row .ah-title { font-size: 14px; font-weight: 800; color: var(--text); }
+  .admin-header-row .ah-count { font-size: 12px; font-weight: 700; color: var(--text-light); }
+
+  @media (max-height:700px) { body { align-items: flex-start; padding-top: 16px; overflow-y: auto; } }
+  @media (max-width:420px)  { .card { padding: 24px 18px; } .landing-title { font-size: 28px; } }
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ===== PAGE 1: LANDING ===== -->
+<div class="page active" id="page-1">
+  <div class="card">
+    <div class="landing-top">
+      <span class="tooth-hero">🦷</span>
+      <div class="badge"><span class="badge-dot"></span> Program Inovasi Kesehatan</div>
+      <h1 class="landing-title">DENTAL<span>-AID</span></h1>
+      <p class="landing-title" style="font-size:18px;font-weight:700;color:var(--blue-mid);letter-spacing:0;margin-top:2px">First Response</p>
+      <p class="landing-subtitle" style="margin-top:10px">Skrining mandiri risiko karies gigi untuk mahasiswa &amp; masyarakat. Cepat, gratis, dan akurat dalam 2 menit! ⏰</p>
+    </div>
+    <div class="feature-row">
+      <div class="feature-pill">🦷 7 Pertanyaan Kunci</div>
+      <div class="feature-pill">📊 Hasil Instan</div>
+      <div class="feature-pill">🔒 Privasi Terjaga</div>
+    </div>
+    <button class="btn-primary" onclick="goTo(2)">🦷 Mulai Skrining Sekarang</button>
+    <button class="btn-admin" onclick="goTo('admin')">🔐 Halaman Admin Kader</button>
+    <p class="footer-note" style="margin-top:14px">Dikembangkan oleh <span>DENTAL-AID Team</span> · Calon Duta Kampus</p>
+  </div>
+</div>
+
+<!-- ===== PAGE 2: IDENTITAS ===== -->
+<div class="page" id="page-2">
+  <div class="card">
+    <div class="progress-wrap">
+      <div class="progress-label"><span>Langkah 1 dari 4</span><span>25%</span></div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:25%"></div></div>
+      <div class="step-dots">
+        <div class="step-dot active"></div><div class="step-dot"></div><div class="step-dot"></div><div class="step-dot"></div>
+      </div>
+    </div>
+    <div class="section-header">
+      <div class="section-icon" style="background:var(--blue-light)">👤</div>
+      <div><div class="section-title">Data Diri</div><div class="section-desc">Identitas kamu bersifat rahasia 🔒</div></div>
+    </div>
+    <div class="error-msg" id="err-2">⚠️ Harap lengkapi semua data diri terlebih dahulu.</div>
+    <div class="form-group">
+      <label class="form-label">✏️ Nama Lengkap</label>
+      <input class="form-input" id="nama" type="text" placeholder="Contoh: Budi Santoso">
+    </div>
+    <div class="form-group">
+      <label class="form-label">🎂 Usia</label>
+      <input class="form-input" id="usia" type="number" placeholder="Contoh: 20" min="10" max="100">
+    </div>
+    <div class="form-group">
+      <label class="form-label">🎓 Status</label>
+      <select class="form-input" id="status">
+        <option value="">— Pilih status —</option>
+        <option>Mahasiswa</option><option>Pelajar</option><option>Pekerja</option><option>Warga Umum</option>
+      </select>
+    </div>
+    <button class="btn-primary" onclick="nextPage(2)">Lanjut →</button>
+    <button class="btn-secondary" onclick="goTo(1)">← Kembali</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 3: KONDISI GIGI (BAGIAN A) ===== -->
+<div class="page" id="page-3">
+  <div class="card">
+    <div class="progress-wrap">
+      <div class="progress-label"><span>Langkah 2 dari 4</span><span>50%</span></div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:50%"></div></div>
+      <div class="step-dots">
+        <div class="step-dot done"></div><div class="step-dot active"></div><div class="step-dot"></div><div class="step-dot"></div>
+      </div>
+    </div>
+    <div class="section-header">
+      <div class="section-icon" style="background:var(--mint)">🦷</div>
+      <div><div class="section-title">Kondisi Gigimu Saat Ini</div><div class="section-desc">Bagian A — Jawab kondisi terkini ya!</div></div>
+    </div>
+    <div class="error-msg" id="err-3">⚠️ Harap jawab semua pertanyaan di bagian ini.</div>
+
+    <div class="q-card">
+      <div class="q-text"><span class="q-num">1</span>Apakah saat ini kamu merasakan sakit atau ngilu pada gigi?</div>
+      <div class="radio-group">
+        <label class="radio-option"><input type="radio" name="q1" value="2"><span class="radio-label">😣 Ya</span></label>
+        <label class="radio-option"><input type="radio" name="q1" value="0"><span class="radio-label">😊 Tidak</span></label>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-text"><span class="q-num">2</span>Apakah saat ini ada gigi yang terlihat berlubang atau berwarna hitam?</div>
+      <div class="radio-group">
+        <label class="radio-option"><input type="radio" name="q2" value="2"><span class="radio-label">😬 Ya</span></label>
+        <label class="radio-option"><input type="radio" name="q2" value="0"><span class="radio-label">😁 Tidak</span></label>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-text"><span class="q-num">3</span>Apakah gigi kamu saat ini sensitif terhadap suhu panas atau dingin?</div>
+      <div class="radio-group">
+        <label class="radio-option"><input type="radio" name="q3" value="2"><span class="radio-label">🌡️ Ya</span></label>
+        <label class="radio-option"><input type="radio" name="q3" value="0"><span class="radio-label">✅ Tidak</span></label>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-text"><span class="q-num">4</span>Apakah gusi kamu mudah berdarah saat sikat gigi belakangan ini?</div>
+      <div class="radio-group">
+        <label class="radio-option"><input type="radio" name="q4" value="2"><span class="radio-label">🩸 Ya</span></label>
+        <label class="radio-option"><input type="radio" name="q4" value="0"><span class="radio-label">✅ Tidak</span></label>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-text"><span class="q-num">5</span>Apakah kamu saat ini memiliki gigi yang sudah tidak ada karena dicabut akibat kerusakan?</div>
+      <div class="radio-group">
+        <label class="radio-option"><input type="radio" name="q5" value="2"><span class="radio-label">😰 Ya</span></label>
+        <label class="radio-option"><input type="radio" name="q5" value="0"><span class="radio-label">✅ Tidak</span></label>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-text"><span class="q-num">6</span>Apakah kamu saat ini sering merasakan bau mulut yang mengganggu?</div>
+      <div class="radio-group">
+        <label class="radio-option"><input type="radio" name="q6" value="2"><span class="radio-label">😷 Ya</span></label>
+        <label class="radio-option"><input type="radio" name="q6" value="0"><span class="radio-label">✅ Tidak</span></label>
+      </div>
+    </div>
+
+    <!-- Q7: KARANG GIGI — pertanyaan baru -->
+    <div class="q-card" style="border-color:#c8e6fa;background:linear-gradient(135deg,#f0f9ff,#e8f7ff)">
+      <div class="q-text"><span class="q-num" style="background:#3ec9a7">7</span>Apakah di gigi kamu ada karang keras yang menempel dan tidak bisa hilang walau disikat?</div>
+      <div class="radio-group">
+        <label class="radio-option"><input type="radio" name="q7" value="2"><span class="radio-label">🪨 Ya</span></label>
+        <label class="radio-option"><input type="radio" name="q7" value="0"><span class="radio-label">✅ Tidak</span></label>
+      </div>
+    </div>
+
+    <button class="btn-primary" onclick="nextPage(3)">Lanjut →</button>
+    <button class="btn-secondary" onclick="goTo(2)">← Kembali</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 4: KEBIASAAN & AKSES (BAGIAN B) ===== -->
+<div class="page" id="page-4">
+  <div class="card">
+    <div class="progress-wrap">
+      <div class="progress-label"><span>Langkah 3 dari 4</span><span>75%</span></div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:75%"></div></div>
+      <div class="step-dots">
+        <div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot active"></div><div class="step-dot"></div>
+      </div>
+    </div>
+    <div class="section-header">
+      <div class="section-icon" style="background:var(--peach)">🪥</div>
+      <div><div class="section-title">Kebiasaan & Akses</div><div class="section-desc">Bagian B — Hampir selesai! 🎉</div></div>
+    </div>
+    <div class="error-msg" id="err-4">⚠️ Harap jawab semua pertanyaan di bagian ini.</div>
+
+    <div class="q-card">
+      <div class="q-text"><span class="q-num">B1</span>Berapa kali kamu sikat gigi dalam sehari?</div>
+      <div class="radio-group">
+        <label class="radio-option"><input type="radio" name="b1" value="2"><span class="radio-label">1x / hari</span></label>
+        <label class="radio-option"><input type="radio" name="b1" value="0"><span class="radio-label">2x / hari</span></label>
+        <label class="radio-option"><input type="radio" name="b1" value="0"><span class="radio-label">3x+ / hari</span></label>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-text"><span class="q-num">B2</span>Kapan biasanya kamu sikat gigi? (boleh pilih lebih dari satu)</div>
+      <div class="check-group">
+        <label class="check-option"><input type="checkbox" name="b2" value="pagi"><span class="check-label"><span class="chk-box">✓</span>🌅 Pagi (setelah sarapan)</span></label>
+        <label class="check-option"><input type="checkbox" name="b2" value="malam"><span class="check-label"><span class="chk-box">✓</span>🌙 Malam (sebelum tidur)</span></label>
+        <label class="check-option"><input type="checkbox" name="b2" value="siang"><span class="check-label"><span class="chk-box">✓</span>☀️ Siang</span></label>
+        <label class="check-option"><input type="checkbox" name="b2" value="sembarang"><span class="check-label"><span class="chk-box">✓</span>🤷 Tidak tentu</span></label>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-text"><span class="q-num">B3</span>Seberapa sering kamu mengonsumsi makanan atau minuman manis saat ini?</div>
+      <div class="radio-group" style="flex-wrap:wrap">
+        <label class="radio-option"><input type="radio" name="b3" value="0"><span class="radio-label">Jarang</span></label>
+        <label class="radio-option"><input type="radio" name="b3" value="0"><span class="radio-label">Kadang-kadang</span></label>
+        <label class="radio-option"><input type="radio" name="b3" value="2"><span class="radio-label">Sering 🍬</span></label>
+        <label class="radio-option"><input type="radio" name="b3" value="2"><span class="radio-label">Sangat Sering 🍭</span></label>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-text"><span class="q-num">B4</span>Kapan terakhir kamu kontrol ke dokter gigi?</div>
+      <div class="radio-group" style="flex-wrap:wrap">
+        <label class="radio-option"><input type="radio" name="b4" value="0"><span class="radio-label">&lt; 6 bulan</span></label>
+        <label class="radio-option"><input type="radio" name="b4" value="0"><span class="radio-label">6–12 bulan</span></label>
+        <label class="radio-option"><input type="radio" name="b4" value="2"><span class="radio-label">&gt; 1 tahun 😬</span></label>
+        <label class="radio-option"><input type="radio" name="b4" value="2"><span class="radio-label">Belum pernah 😱</span></label>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-text"><span class="q-num">B5</span>Jika saat ini gigi kamu sakit, apa yang biasanya kamu lakukan?</div>
+      <div class="radio-group" style="flex-wrap:wrap">
+        <label class="radio-option"><input type="radio" name="b5" value="0"><span class="radio-label">🏥 Ke Dokter</span></label>
+        <label class="radio-option"><input type="radio" name="b5" value="0"><span class="radio-label">🏥 Ke Puskesmas</span></label>
+        <label class="radio-option"><input type="radio" name="b5" value="2"><span class="radio-label">💊 Obat sendiri</span></label>
+        <label class="radio-option"><input type="radio" name="b5" value="2"><span class="radio-label">🙈 Dibiarkan</span></label>
+      </div>
+    </div>
+
+    <button class="btn-primary" onclick="nextPage(4)">Lihat Hasil →</button>
+    <button class="btn-secondary" onclick="goTo(3)">← Kembali</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 5: HASIL ===== -->
+<div class="page" id="page-5">
+  <div class="card">
+    <div class="progress-wrap">
+      <div class="progress-label"><span>Selesai! 🎉</span><span>100%</span></div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:100%;background:linear-gradient(90deg,var(--mint-dark),var(--green-dark))"></div></div>
+      <div class="step-dots">
+        <div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot done"></div>
+      </div>
+    </div>
+
+    <div id="identity-result-box"></div>
+
+    <div class="result-icon-wrap">
+      <span class="result-emoji" id="result-emoji">🦷</span>
+      <div>
+        <div id="result-status-text" style="font-size:22px;font-weight:900;margin:8px 0 4px;color:var(--text)"></div>
+        <span class="result-status-badge" id="result-badge"></span>
+      </div>
+    </div>
+
+    <div class="result-message-box" id="result-msg-box"></div>
+    <div class="result-tips" id="result-tips-box"></div>
+
+    <!-- ===== WA SECTION ===== -->
+    <div class="wa-section">
+      <div class="wa-section-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="#1a7a42"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Hubungi Kader DENTAL-AID
+      </div>
+      <div class="wa-section-desc">
+        Ingin diperiksa langsung oleh kader terlatih kami? Klik tombol di bawah untuk terhubung via WhatsApp dan jadwalkan kunjungan pemeriksaan gigi gratis! 🦷
+      </div>
+      <a id="wa-link" href="#" target="_blank" class="btn-wa">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Chat Kader via WhatsApp
+      </a>
+    </div>
+
+    <div class="divider">atau</div>
+    <button class="btn-primary" onclick="restart()">🔄 Skrining Ulang</button>
+    <p class="footer-note">🦷 DENTAL-AID First Response · <span>Bukan pengganti diagnosa dokter</span></p>
+  </div>
+</div>
+
+<!-- ===== PAGE ADMIN ===== -->
+<div class="page" id="page-admin">
+  <div class="card">
+    <div class="admin-login-box">
+      <span class="admin-icon">🔐</span>
+      <div class="admin-title">Halaman Admin Kader</div>
+      <div class="admin-sub">Masukkan kata sandi untuk melihat data skrining pasien</div>
+    </div>
+
+    <!-- LOGIN -->
+    <div id="admin-locked">
+      <div class="error-msg" id="err-admin">⚠️ Kata sandi salah. Silakan coba lagi.</div>
+      <div class="form-group">
+        <label class="form-label">🔑 Kata Sandi Kader</label>
+        <input class="form-input" id="admin-pass" type="password" placeholder="Masukkan kata sandi..."
+          onkeydown="if(event.key==='Enter') adminLogin()">
+      </div>
+      <button class="btn-primary" onclick="adminLogin()">🔓 Masuk ke Dashboard</button>
+      <button class="btn-secondary" onclick="goTo(1)">← Kembali ke Beranda</button>
+      <p class="footer-note" style="margin-top:14px">Kata sandi default: <span>dentalaid2025</span></p>
+    </div>
+
+    <!-- DASHBOARD DATA -->
+    <div id="admin-data" style="display:none">
+      <div class="admin-summary" id="admin-summary"></div>
+      <div class="admin-header-row">
+        <div class="ah-title">📋 Data Skrining Masuk</div>
+        <div class="ah-count" id="admin-count"></div>
+      </div>
+      <div class="table-wrap" id="admin-table-wrap"></div>
+      <button class="btn-danger" onclick="clearData()">🗑️ Hapus Semua Data</button>
+      <button class="btn-secondary" onclick="adminLogout()">🔒 Keluar / Logout</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- /app -->
+
+<script>
+// =====================
+// KONFIGURASI — GANTI DI SINI
+// =====================
+const KADER_WA      = '6281234567890';  // Nomor WA kader (format: 628xxxxxxxxxx)
+const ADMIN_PASSWORD = 'dentalaid2025'; // Kata sandi admin kader
+
+// =====================
+// NAVIGASI
+// =====================
+function goTo(n) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const id = (n === 'admin') ? 'page-admin' : 'page-' + n;
+  const el = document.getElementById(id);
+  if (el) el.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function nextPage(current) {
+  if (current === 2) {
+    const nama = document.getElementById('nama').value.trim();
+    const usia = document.getElementById('usia').value.trim();
+    const stat = document.getElementById('status').value;
+    const err  = document.getElementById('err-2');
+    if (!nama || !usia || !stat) { err.classList.add('show'); return; }
+    err.classList.remove('show'); goTo(3);
+
+  } else if (current === 3) {
+    const all = ['q1','q2','q3','q4','q5','q6','q7'];
+    const missing = all.some(q => !document.querySelector(`input[name="${q}"]:checked`));
+    const err = document.getElementById('err-3');
+    if (missing) { err.classList.add('show'); return; }
+    err.classList.remove('show'); goTo(4);
+
+  } else if (current === 4) {
+    const needed = ['b1','b3','b4','b5'];
+    const missing = needed.some(q => !document.querySelector(`input[name="${q}"]:checked`));
+    const waktuOk = document.querySelectorAll('input[name="b2"]:checked').length > 0;
+    const err = document.getElementById('err-4');
+    if (missing || !waktuOk) { err.classList.add('show'); return; }
+    err.classList.remove('show');
+    showResult();
+    goTo(5);
+  }
+}
+
+// =====================
+// SCORING
+// =====================
+function getVal(name) {
+  const el = document.querySelector(`input[name="${name}"]:checked`);
+  return el ? parseInt(el.value) : 0;
+}
+
+function calcScore() {
+  let score = 0;
+  ['q1','q2','q3','q4','q5','q6','q7'].forEach(q => { score += getVal(q); });
+  score += getVal('b1');
+  const hasPagi  = document.querySelector('input[name="b2"][value="pagi"]:checked');
+  const hasMalam = document.querySelector('input[name="b2"][value="malam"]:checked');
+  if (!(hasPagi && hasMalam)) score += 2;
+  score += getVal('b3');
+  score += getVal('b4');
+  score += getVal('b5');
+  return score;
+}
+
+function classifyScore(score) {
+  if (score <= 6)  return 'green';
+  if (score <= 14) return 'yellow';
+  return 'red';
+}
+
+function getResultContent(level) {
+  const map = {
+    green: {
+      emoji: '🏆', statusText: 'RISIKO RENDAH',
+      badgeClass: 'status-green', msgClass: 'msg-green',
+      msg: '✨ Senyummu Terjaga! Kamu bagian dari 2,8% orang yang hebat! Pertahankan kebiasaan baikmu ya!',
+      tips: [
+        { icon: '🪥', text: 'Tetap sikat gigi 2x sehari, pagi & malam.' },
+        { icon: '🧵', text: 'Gunakan dental floss minimal 1x sehari.' },
+        { icon: '🏥', text: 'Kontrol rutin ke dokter gigi setiap 6 bulan.' },
+        { icon: '💧', text: 'Perbanyak minum air putih untuk menjaga kebersihan mulut.' },
+      ]
+    },
+    yellow: {
+      emoji: '⚠️', statusText: 'RISIKO SEDANG',
+      badgeClass: 'status-yellow', msgClass: 'msg-yellow',
+      msg: '🚨 Waspada! Ada tanda awal kerusakan. Segera perbaiki waktu sikat gigimu dan kurangi konsumsi manis!',
+      tips: [
+        { icon: '⏰', text: 'Perbaiki rutinitas: sikat gigi tiap pagi & malam hari.' },
+        { icon: '🍬', text: 'Kurangi konsumsi gula dan minuman bersoda.' },
+        { icon: '🏥', text: 'Segera jadwalkan kunjungan ke dokter gigi terdekat.' },
+        { icon: '🪥', text: 'Gunakan pasta gigi berfluoride untuk perlindungan ekstra.' },
+      ]
+    },
+    red: {
+      emoji: '🚨', statusText: 'RISIKO TINGGI',
+      badgeClass: 'status-red', msgClass: 'msg-red',
+      msg: '🆘 Tindakan Segera! Kondisi gigimu butuh penanganan klinis. Jangan tunda lagi kunjungan ke dokter gigi!',
+      tips: [
+        { icon: '🏥', text: 'Segera kunjungi dokter gigi atau Puskesmas terdekat.' },
+        { icon: '💊', text: 'Jangan hanya mengandalkan obat pereda nyeri tanpa penanganan klinis.' },
+        { icon: '🪥', text: 'Mulai sikat gigi 2x sehari meski terasa sakit.' },
+        { icon: '📱', text: 'Hubungi kader DENTAL-AID untuk konsultasi dan pemeriksaan langsung.' },
+      ]
+    }
+  };
+  return map[level];
+}
+
+// =====================
+// TAMPILKAN HASIL
+// =====================
+function showResult() {
+  const nama   = document.getElementById('nama').value.trim();
+  const usia   = document.getElementById('usia').value.trim();
+  const status = document.getElementById('status').value;
+  const score  = calcScore();
+  const level  = classifyScore(score);
+  const c      = getResultContent(level);
+
+  document.getElementById('identity-result-box').innerHTML = `
+    <div class="identity-result">
+      <div class="id-avatar">😊</div>
+      <div>
+        <div class="id-name">${nama}</div>
+        <div class="id-info">${status} · ${usia} tahun</div>
+      </div>
+    </div>`;
+
+  document.getElementById('result-emoji').textContent       = c.emoji;
+  document.getElementById('result-status-text').textContent = c.statusText;
+  document.getElementById('result-badge').textContent       = '● ' + c.statusText;
+  document.getElementById('result-badge').className         = 'result-status-badge ' + c.badgeClass;
+  document.getElementById('result-msg-box').textContent     = c.msg;
+  document.getElementById('result-msg-box').className       = 'result-message-box ' + c.msgClass;
+  document.getElementById('result-tips-box').innerHTML      = `
+    <div class="result-tips-title">💡 Rekomendasi Untukmu</div>
+    ${c.tips.map(t => `<div class="tip-item"><span class="tip-icon">${t.icon}</span><span>${t.text}</span></div>`).join('')}`;
+
+  // Build WA link
+  const lvlText = { green:'Risiko Rendah 🟢', yellow:'Risiko Sedang 🟡', red:'Risiko Tinggi 🔴' }[level];
+  const waText  = encodeURIComponent(
+    `Halo Kader DENTAL-AID 👋\n\nSaya baru selesai skrining mandiri dan ingin pemeriksaan langsung.\n\n` +
+    `📋 *Data Saya:*\n• Nama: ${nama}\n• Usia: ${usia} tahun\n• Status: ${status}\n• Hasil Skrining: ${lvlText}\n\n` +
+    `Mohon bantu jadwalkan kunjungan pemeriksaan. Terima kasih! 🦷`
+  );
+  document.getElementById('wa-link').href = `https://wa.me/${KADER_WA}?text=${waText}`;
+
+  // Simpan ke localStorage
+  saveRecord({ nama, usia, status, score, level, date: new Date().toLocaleString('id-ID') });
+}
+
+// =====================
+// LOCAL STORAGE
+// =====================
+const STORAGE_KEY = 'dentalaid_records_v2';
+
+function saveRecord(record) {
+  const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  data.push(record);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+function getRecords() {
+  return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+}
+
+function clearData() {
+  if (!confirm('Yakin ingin menghapus SEMUA data skrining?\nTindakan ini tidak bisa dibatalkan!')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  renderAdminData();
+}
+
+// =====================
+// ADMIN
+// =====================
+function adminLogin() {
+  const pass = document.getElementById('admin-pass').value;
+  const err  = document.getElementById('err-admin');
+  if (pass !== ADMIN_PASSWORD) { err.classList.add('show'); return; }
+  err.classList.remove('show');
+  document.getElementById('admin-locked').style.display = 'none';
+  document.getElementById('admin-data').style.display   = 'block';
+  renderAdminData();
+}
+
+function adminLogout() {
+  document.getElementById('admin-pass').value = '';
+  document.getElementById('admin-data').style.display   = 'none';
+  document.getElementById('admin-locked').style.display = 'block';
+  goTo(1);
+}
+
+function renderAdminData() {
+  const records = getRecords();
+  const g = records.filter(r => r.level === 'green').length;
+  const y = records.filter(r => r.level === 'yellow').length;
+  const r = records.filter(r => r.level === 'red').length;
+
+  document.getElementById('admin-summary').innerHTML = `
+    <div class="summary-card sc-green"><div class="s-num">${g}</div><div class="s-lbl">🟢 Risiko Rendah</div></div>
+    <div class="summary-card sc-yellow"><div class="s-num">${y}</div><div class="s-lbl">🟡 Risiko Sedang</div></div>
+    <div class="summary-card sc-red"><div class="s-num">${r}</div><div class="s-lbl">🔴 Risiko Tinggi</div></div>`;
+
+  document.getElementById('admin-count').textContent = `Total: ${records.length} responden`;
+
+  if (records.length === 0) {
+    document.getElementById('admin-table-wrap').innerHTML = `
+      <div class="empty-state">
+        <span class="e-icon">📭</span>
+        <div class="e-text">Belum ada data skrining yang masuk.</div>
+      </div>`;
+    return;
+  }
+
+  const levelBadge = { green:'risk-green', yellow:'risk-yellow', red:'risk-red' };
+  const levelText  = { green:'Rendah', yellow:'Sedang', red:'Tinggi' };
+
+  const rows = [...records].reverse().map((rec, i) => `
+    <tr>
+      <td>${records.length - i}</td>
+      <td><strong>${rec.nama}</strong></td>
+      <td>${rec.usia} th</td>
+      <td>${rec.status}</td>
+      <td><span class="badge-risk ${levelBadge[rec.level]}">${levelText[rec.level]}</span></td>
+      <td style="color:var(--text-light);font-size:11px;white-space:nowrap">${rec.date}</td>
+    </tr>`).join('');
+
+  document.getElementById('admin-table-wrap').innerHTML = `
+    <table>
+      <thead><tr><th>#</th><th>Nama</th><th>Usia</th><th>Status</th><th>Risiko</th><th>Waktu</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+
+// =====================
+// RESTART
+// =====================
+function restart() {
+  document.querySelectorAll('input[type=radio], input[type=checkbox]').forEach(el => el.checked = false);
+  document.getElementById('nama').value   = '';
+  document.getElementById('usia').value   = '';
+  document.getElementById('status').value = '';
+  document.querySelectorAll('.error-msg').forEach(e => e.classList.remove('show'));
+  goTo(1);
+}
+</script>
+</body>
+</html>
